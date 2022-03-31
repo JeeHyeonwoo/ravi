@@ -1,0 +1,24 @@
+spring:
+  profiles:
+    active: local
+    datasource:
+      type: com.zaxxer.hikari.HikariDataSource
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://localhost:5432/postgres
+      username: postgres
+      password: gusdn0110
+      hikari:
+        maximum-pool-size: 10
+        max-lifetime: 30
+
+  thymeleaf:
+    prefix: classpath:/templates/template/
+    suffix: .html
+
+logging:
+  file:
+    path: /log/board
+
+server:
+  port: 8080
+
