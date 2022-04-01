@@ -1,19 +1,20 @@
 spring:
-  profiles:
-    active: local
-    datasource:
-      type: com.zaxxer.hikari.HikariDataSource
-      driver-class-name: org.postgresql.Driver
-      url: jdbc:postgresql://localhost:5432/postgres
-      username: postgres
-      password: gusdn0110
-      hikari:
-        maximum-pool-size: 10
-        max-lifetime: 30
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/BoardCalendar
+    username: postgres
+    password: gusdn0110
+
 
   thymeleaf:
     prefix: classpath:/templates/template/
     suffix: .html
+
+
+mybatis:
+  mapper-locations: mybatis/mapper/*.xml
+  type-aliases-package: com.v1.mapper
+
 
 logging:
   file:

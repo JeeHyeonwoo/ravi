@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.v1.mapper.CalendarMapper">
+
+    <insert id="findByName">
+        INSERT INTO calendar
+        (title, description, "start", "end", "type", background_color, text_color, all_day, group_id, user_id)
+        VALUES(#{title}, #{description}, #{start}, #{end}, #{type}, #{backgroundColor}, #{textColor}, false, #{groupId}, #{userId});
+    </insert>
+
+</mapper>

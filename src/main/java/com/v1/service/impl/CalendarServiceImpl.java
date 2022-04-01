@@ -1,22 +1,37 @@
 package com.v1.service.impl;
 
+import com.v1.mapper.CalendarMapper;
+import com.v1.mapper.MemberMapper;
+import com.v1.model.dto.MemberDTO;
+import com.v1.model.vo.CalendarVO;
 import com.v1.service.CalendarService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 @Service
+@RequiredArgsConstructor
 public class CalendarServiceImpl implements CalendarService {
+
+    private final MemberMapper memberMapper;
+    private final CalendarMapper calendarMapper;
+
+    @Override
+    public void save(CalendarVO calendarVO) throws Exception{
+        String name = memberMapper.findByName(calendarVO.getUserId()).map(MemberDTO::getUsername).orElse(null);
+        if(name != null) {
+            calendarMapper.insert(calendarVO);
+        }else {
+            throw new Exception("존재하지 않는 사용자의 접근");
+        }
+    }
+
 
     /**
      * 캘린더 빌드
      * */
 
-    @Override
+    /*@Override
     public int[][] buildCalendar(int year, int month) {
         int[][] calendar = new int[5][7];
 
@@ -72,7 +87,7 @@ public class CalendarServiceImpl implements CalendarService {
             return true;
         else
             return false;
-    }
+    }*/
 
 
 
