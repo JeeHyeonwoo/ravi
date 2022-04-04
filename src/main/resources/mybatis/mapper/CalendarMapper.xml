@@ -7,10 +7,10 @@
 
 <mapper namespace="com.v1.mapper.CalendarMapper">
 
-    <insert id="findByName">
+    <insert id="insert">
         INSERT INTO calendar
-        (title, description, "start", "end", "type", background_color, text_color, all_day, group_id, user_id)
-        VALUES(#{title}, #{description}, #{start}, #{end}, #{type}, #{backgroundColor}, #{textColor}, false, #{groupId}, #{userId});
+        (title, description, start_date, end_date, type, background_color, text_color, all_day, group_id, user_id)
+        VALUES(#{title}, #{description}, #{start}::timestamp , #{end}::timestamp , #{type}, #{backgroundColor}, #{textColor}, #{allDay}, #{groupId}, #{userId});
     </insert>
 
 </mapper>

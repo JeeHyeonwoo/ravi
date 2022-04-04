@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
+
 @Service
 @RequiredArgsConstructor
 public class CalendarServiceImpl implements CalendarService {
@@ -18,8 +19,8 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public void save(CalendarVO calendarVO) throws Exception{
-        String name = memberMapper.findByName(calendarVO.getUserId()).map(MemberDTO::getUsername).orElse(null);
-        if(name != null) {
+        MemberDTO dto = memberMapper.findByName(calendarVO.getUserId());
+        if(dto != null) {
             calendarMapper.insert(calendarVO);
         }else {
             throw new Exception("존재하지 않는 사용자의 접근");
