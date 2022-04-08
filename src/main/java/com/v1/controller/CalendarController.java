@@ -10,10 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -53,7 +50,6 @@ public class CalendarController {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-
         System.out.printf(calendarVO.toString());
         return "success";
     }
