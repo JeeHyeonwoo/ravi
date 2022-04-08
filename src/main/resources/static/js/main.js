@@ -10511,7 +10511,6 @@ var FullCalendar = (function (exports) {
                     maxHeight: sectionConfig.maxHeight,
                     liquid: isLiquid,
                     liquidIsAbsolute: true // because its within a harness
-
         },
             content
         )))
@@ -14492,11 +14491,7 @@ var FullCalendar = (function (exports) {
                                 }
                             },
                             props.colGroupNode,
-                            createElement("tbody", {
-                                role: "presentation",
-                                className: "fc-body",
-                                style: "position : relative"
-                            }, props.cells.map(function (cells, row) {
+                            createElement("tbody", {role: "presentation"}, props.cells.map(function (cells, row) {
                                 return (createElement(TableRow, {
                                     ref: _this.rowRefs.createRef(row),
                                     key: cells.length
