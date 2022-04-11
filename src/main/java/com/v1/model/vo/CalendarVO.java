@@ -10,7 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class CalendarVO {
     private Long id;
     private String title;
-    private String description;     // 설명
+    private String desc;     // 설명
 
     //@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm")
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm")
@@ -19,7 +19,9 @@ public class CalendarVO {
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm")
     private String end;
 
-    private String type;
+    private String color;
+
+
     private Long userId;
     private Long boardId;
     private String backgroundColor;

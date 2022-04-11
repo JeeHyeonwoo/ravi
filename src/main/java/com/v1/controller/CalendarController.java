@@ -44,9 +44,10 @@ public class CalendarController {
 
     @PostMapping("/save")
     @ResponseBody
-    public String save(@RequestBody CalendarVO calendarVO) {
+    public String save(CalendarVO calendarVO) {
         try{
-            calendarService.save(calendarVO);
+            System.out.println(calendarVO.getStart() + " ~ " + calendarVO.getEnd());
+            //calendarService.save(calendarVO);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
