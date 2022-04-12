@@ -19,14 +19,10 @@ public class CalendarVO {
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm")
     private String end;
 
-    private String color;
-
-
     private Long userId;
-    private Long boardId;
+    private Long boardId = 1L;
     private String backgroundColor;
     private String textColor;
-    private Long groupId = 1L;
     private boolean allDay;
 
 

@@ -19,16 +19,6 @@ public class CalendarController {
 
     private final CalendarService calendarService;
 
-    /*@GetMapping("/")
-    public String setCalendar(Model model) {
-        Calendar cal = Calendar.getInstance(Locale.KOREA);
-        int[][] calendar = calendarService.buildCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH));
-
-        model.addAttribute("Calendar", calendar);
-
-        return "/index";
-    }*/
-
     @GetMapping("/index")
     public String index() {
         return "calendar";
@@ -46,24 +36,19 @@ public class CalendarController {
     @ResponseBody
     public String save(CalendarVO calendarVO) {
         try{
-            System.out.println(calendarVO.getStart() + " ~ " + calendarVO.getEnd());
-            //calendarService.save(calendarVO);
+            calendarService.save(calendarVO);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
-        System.out.printf(calendarVO.toString());
         return "success";
     }
 
     @PostMapping("/getcalendar")
     @ResponseBody
-    public List<Map<String, Object>> getCalendar(@RequestParam Map<String, Object> map, HttpServletRequest request
-    , HttpServletResponse response) throws Exception{
-        List<Map<String, Object>> result = new ArrayList<>();
-        map.put("start", "2022-04-04");
-        map.put("end", "2022-04-06");
-        map.put("title", "제목");
-        result.add(map);
-        return result;
+    public String getCalendar(Long boardId, String month){
+        calendarService.findByCalendars(boardId, month);
+        return "gd";
     }
+
+
 }

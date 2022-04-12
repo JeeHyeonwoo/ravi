@@ -2,12 +2,15 @@ package com.v1.service.impl;
 
 import com.v1.mapper.CalendarMapper;
 import com.v1.mapper.MemberMapper;
+import com.v1.model.dto.CalendarDTO;
 import com.v1.model.dto.MemberDTO;
 import com.v1.model.vo.CalendarVO;
 import com.v1.service.CalendarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 
 @Service
@@ -27,6 +30,13 @@ public class CalendarServiceImpl implements CalendarService {
         }
     }
 
+    @Override
+    public List<CalendarDTO> findByCalendars(Long boardId, String month) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
+        month = simpleDateFormat.format(month);
+        List<CalendarDTO> calendars = calendarMapper.findByCalendar(boardId, month);
+        return calendars;
+    }
 
     /**
      * 캘린더 빌드

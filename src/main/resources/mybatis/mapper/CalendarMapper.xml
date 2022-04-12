@@ -9,8 +9,15 @@
 
     <insert id="insert">
         INSERT INTO calendar
-        (title, description, start_date, end_date, type, background_color, text_color, all_day, group_id, user_id)
-        VALUES(#{title}, #{description}, #{start}::timestamp , #{end}::timestamp , #{type}, #{backgroundColor}, #{textColor}, #{allDay}, #{groupId}, #{userId});
+        (title, description, start_date, end_date, background_color, text_color, all_day, board_id, user_id)
+        VALUES(#{title}, #{desc}, #{start}::timestamp , #{end}::timestamp, #{backgroundColor}, #{textColor}, #{allDay}, #{boardId}, #{userId});
     </insert>
 
+    <select id="findByCalendar" resultType="com.v1.model.dto.CalendarDTO">
+        select c.id, title, description, start_date, end_date, c.background_color, text_color, m.username
+        from calendar c, member m
+        where c.board_id = 1
+          and m.board_id = c.board_id
+            and (c.start_date between now() and date '2022-05-01');
+    </select>
 </mapper>

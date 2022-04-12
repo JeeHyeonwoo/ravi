@@ -14,13 +14,19 @@
   <script>
     document.addEventListener('DOMContentLoaded', async function() {
       var calendarEl = document.getElementById('calendar');
+
+
       await $.ajax({
         type : 'POST',
         url : 'calendar/getcalendar',
+        data : {
+          boardId : document.getElementById('fc-dom-1').innerText,
+        },
         success: function (res) {
-          cal = res;
+          return 1;
+          //
         }
-      })
+      });
 
 
 
@@ -30,7 +36,17 @@
         selectable: true,
         businessHours: true,
         dayMaxEvents: true, // allow "more" link when too many events
-        events: cal,
+        events: await $.ajax({
+          type: 'POST',
+          url : 'calendar/getcalendar',
+          data : {
+            month : document.getElementById('fc-dom-1').innerText,
+            boardId : 1,      // 수정
+          },
+          success: function (res) {
+            return res;
+          }
+        }),
         select: function (startDate, endDate, jsEvent, view) {
           $("#calendarModal").modal("show");
           $("#closeModalBtn").on('click', function (){
@@ -59,7 +75,7 @@
                 "title": edit_title,
                 "start": start_date,
                 "end": end_date,
-                "color": color,
+                "backgroundColor": color,
                 "desc": desc,
               }//전송할 객체 생성
               $.ajax({
@@ -75,6 +91,7 @@
 
 
         },
+
         /*dateClick: function (info){
           console.log(info.dateStr);
         },*/
@@ -149,7 +166,6 @@
               <option value="#63e6be" style="color:#63e6be;">연두색</option>
               <option value="#a9e34b" style="color:#a9e34b;">초록색</option>
               <option value="#4d638c" style="color:#4d638c;">남색</option>
-              <option value="#495057" style="color:#495057;">검정색</option>
             </select>
           </div>
         </div>
