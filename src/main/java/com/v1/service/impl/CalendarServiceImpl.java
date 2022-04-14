@@ -1,9 +1,12 @@
 package com.v1.service.impl;
 
+import com.v1.domain.Month;
 import com.v1.mapper.CalendarMapper;
 import com.v1.mapper.MemberMapper;
 import com.v1.model.dto.CalendarDTO;
 import com.v1.model.dto.MemberDTO;
+import com.v1.model.dto.RequestCalendar;
+import com.v1.model.dto.ResponseCalendar;
 import com.v1.model.vo.CalendarVO;
 import com.v1.service.CalendarService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 
 @Service
@@ -31,17 +36,43 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public List<CalendarDTO> findByCalendars(Long boardId, String month) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
-        month = simpleDateFormat.format(month);
-        List<CalendarDTO> calendars = calendarMapper.findByCalendar(boardId, month);
-        return calendars;
+    public List<ResponseCalendar> findByCalendars(RequestCalendar requestCalendar) {
+        CalendarDTO calendarDTO = new CalendarDTO();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E MMM dd yyyy HH:mm:ss", Locale.ENGLISH);
+
+        try{
+            calendarDTO.setBoardId(requestCalendar.getBoardId());
+            calendarDTO.setStartDate(simpleDateFormat.parse(requestCalendar.getStartDate()));
+            calendarDTO.setEndDate(simpleDateFormat.parse(requestCalendar.getEndDate()));
+        } catch (Exception e){
+            System.out.println("실패 : " + e.getMessage());
+        }
+
+        return calendarMapper.findByCalendars(calendarDTO);
     }
 
+    @Override
+    public boolean deleteCalendar(RequestCalendar requestCalendar) {
+        Optional<ResponseCalendar> responseCalendar = calendarMapper.findByCalendar(requestCalendar);
+        if(responseCalendar.isPresent()){
+            calendarMapper.delete(requestCalendar.getId());
+            return true;
+        }
+        return false;
+
+    }
     /**
      * 캘린더 빌드
      * */
+    @Override
+    public ResponseCalendar calendarInfo(RequestCalendar requestCalendar) {
+        Optional<ResponseCalendar> result = calendarMapper.findByCalendar(requestCalendar);
+        if(result.isPresent()){
+            return result.get();
+        }
+        return null;
 
+    }
     /*@Override
     public int[][] buildCalendar(int year, int month) {
         int[][] calendar = new int[5][7];

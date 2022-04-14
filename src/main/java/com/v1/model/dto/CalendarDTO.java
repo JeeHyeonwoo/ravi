@@ -1,6 +1,5 @@
 package com.v1.model.dto;
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
@@ -8,6 +7,7 @@ import java.util.Date;
 @Data
 public class CalendarDTO {
     private Long id;
+    private Long boardId;
     private String title;
     private String description;
     private Date startDate;

@@ -12,23 +12,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 
   <script>
-    document.addEventListener('DOMContentLoaded', async function() {
-      var calendarEl = document.getElementById('calendar');
-
-
-      await $.ajax({
-        type : 'POST',
-        url : 'calendar/getcalendar',
-        data : {
-          boardId : document.getElementById('fc-dom-1').innerText,
-        },
-        success: function (res) {
-          return 1;
-          //
-        }
+    $(document).ready(function (){
+      $("#calendarModal").on("hidden.bs.modal", function (e){
+        location.reload();
       });
-
-
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
 
       var calendar = new FullCalendar.Calendar(calendarEl, {
         initialDate: moment().format('YYYY-MM'),
@@ -36,23 +26,32 @@
         selectable: true,
         businessHours: true,
         dayMaxEvents: true, // allow "more" link when too many events
-        events: await $.ajax({
-          type: 'POST',
-          url : 'calendar/getcalendar',
-          data : {
-            month : document.getElementById('fc-dom-1').innerText,
-            boardId : 1,      // 수정
-          },
-          success: function (res) {
-            return res;
-          }
-        }),
+        events: async function (start) {
+          let data;
+          await $.ajax({
+            type: 'POST',
+            url : 'calendar/getcalendar',
+            data : {
+              startDate : start.start,
+              endDate : start.end,
+              boardId : 1,
+            },
+            success: function (res) {
+              data = res;
+            }
+        })
+          return data;
+        },
         select: function (startDate, endDate, jsEvent, view) {
           $("#calendarModal").modal("show");
+
           $("#closeModalBtn").on('click', function (){
             $("#calendarModal").modal("hide");
           });
-          document.getElementById('edit-start').value = new Date(startDate.start).toISOString().slice(0,16);
+
+
+          let stDate = new Date(startDate.start);
+          document.getElementById('edit-start').value = new Date(stDate.getTime() - (stDate.getTimezoneOffset() * 60000)).toISOString().slice(0,16);
           document.getElementById('edit-end').value = new Date(startDate.end).toISOString().slice(0,16);
           $("#addCalendar").on("click",function() {  // modal의 추가 버튼 클릭 시
             var edit_title = $("#edit-title").val();
@@ -60,8 +59,6 @@
             var end_date = $("#edit-end").val();
             var color = $("#edit-color").val();
             var desc = $("#edit-desc").val();
-
-            console.log(start_date);
 
             //내용 입력 여부 확인
             if (edit_title == null || edit_title == "") {
@@ -83,7 +80,7 @@
                 url : 'calendar/save',
                 data : obj,
                 success: function (res) {
-                  closeModal($('#calendarModal'));
+                  location.reload();
                 }
               });
             }
@@ -91,6 +88,32 @@
 
 
         },
+        eventClick: function (event) {
+          let obj = {
+            "boardId" : 1,
+            "id" : event.event.id,
+          }
+
+          $.ajax({
+            type: 'POST',
+            url : 'calendar/view',
+            data : obj,
+            success: function (res) {
+              document.getElementById('edit-title').value = res.contents.title;
+              document.getElementById('edit-start').value = res.contents.start.slice(0,16);
+              document.getElementById('edit-end').value = res.contents.end.slice(0,16);
+              document.getElementById('edit-desc').value = res.contents.description;
+              document.getElementById('edit-color').value = res.contents.backgroundColor;
+              /*var end_date = $("#edit-end").val();
+              var color = $("#edit-color").val();
+              var desc = $("#edit-desc").val();*/
+              $("#calendarModal").modal("show");
+            }
+          })
+
+          console.log(event.event);
+
+        }
 
         /*dateClick: function (info){
           console.log(info.dateStr);
@@ -125,9 +148,10 @@
 <body>
 
 <div id='calendar'></div>
+
 <!-- 일정 추가 MODAL -->
 <div class="modal fade" id="calendarModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title"></h4>
@@ -149,7 +173,7 @@
         </div>
         <div class="row">
           <div class="col-xs-12">
-            <label class="col-xs-4" for="edit-end">끝</label>
+            <label class="col-xs-4" style="" for="edit-end">종료</label>
             <input class="inputModal" type="datetime-local" name="edit-end" id="edit-end" />
           </div>
         </div>
