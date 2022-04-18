@@ -95,5 +95,24 @@ public class CalendarController {
 
     }
 
+    @PostMapping("/update")
+    @ResponseBody
+    public ResponseEntity<Response> update(RequestCalendar requestCalendar){
+        System.out.println("backend ㅁㄴ제");
+        boolean result = calendarService.updateService(requestCalendar);
+        if(result) {
+            System.out.println("실행중");
+            Result response = Result.builder().build();
+            return new ResponseEntity<>(Response.builder().response(response).contents("success").build(), HttpStatus.OK);
+        } else {
+            Result response = Result.builder()
+                    .status(StatusEnum.NOT_FOUND)
+                    .errorCode("400")
+                    .message("존재하지 않는 일정입니다")
+                    .build();
+            return new ResponseEntity<>(Response.builder().response(response).contents("Not Found").build(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 }

@@ -12,4 +12,5 @@ public interface CalendarService {
     List<ResponseCalendar> findByCalendars(RequestCalendar requestCalendar);
     boolean deleteCalendar(RequestCalendar requestCalendar);
     ResponseCalendar calendarInfo(RequestCalendar requestCalendar);
+    boolean updateService(RequestCalendar requestCalendar);
 }

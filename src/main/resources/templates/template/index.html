@@ -1,149 +1,204 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset='utf-8' />
-  <link href='/css/main.css' rel='stylesheet' />
-  <script src='/js/main.js'></script>
-  <script src='/js/create_calendar.js'></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <meta charset='utf-8'/>
+    <link href='/css/main.css' rel='stylesheet'/>
+    <script src='/js/main.js'></script>
+    <script src='/js/create_calendar.js'></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 
-  <script>
-    $(document).ready(function (){
-      $("#calendarModal").on("hidden.bs.modal", function (e){
-        location.reload();
-      });
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-      var calendarEl = document.getElementById('calendar');
+    <script>
+        $(document).ready(function () {
+            $("#calendarModal").on("hidden.bs.modal", function (e) {
+                location.reload();
+            });
+            $("#closeModalBtn").on("click", function (e) {
+               location.reload();
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
 
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialDate: moment().format('YYYY-MM'),
-        editable: true,
-        selectable: true,
-        businessHours: true,
-        dayMaxEvents: true, // allow "more" link when too many events
-        events: async function (start) {
-          let data;
-          await $.ajax({
-            type: 'POST',
-            url : 'calendar/getcalendar',
-            data : {
-              startDate : start.start,
-              endDate : start.end,
-              boardId : 1,
-            },
-            success: function (res) {
-              data = res;
-            }
-        })
-          return data;
-        },
-        select: function (startDate, endDate, jsEvent, view) {
-          $("#calendarModal").modal("show");
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialDate: moment().format('YYYY-MM'),
+                editable: true,
+                selectable: true,
+                businessHours: true,
+                dayMaxEvents: true, // allow "more" link when too many events
+                events: async function (start) {
+                    let data;
+                    await $.ajax({
+                        type: 'POST',
+                        url: 'calendar/getcalendar',
+                        data: {
+                            startDate: start.start,
+                            endDate: start.end,
+                            boardId: 1,
+                        },
+                        success: function (res) {
+                            data = res;
+                        }
+                    })
+                    return data;
+                },
+                select: function (startDate, endDate, jsEvent, view) {
+                    $("#calendarModal").modal("show");
 
-          $("#closeModalBtn").on('click', function (){
-            $("#calendarModal").modal("hide");
-          });
+                    $("#closeModalBtn").on('click', function () {
+                        $("#calendarModal").modal("hide");
+                    });
 
 
-          let stDate = new Date(startDate.start);
-          document.getElementById('edit-start').value = new Date(stDate.getTime() - (stDate.getTimezoneOffset() * 60000)).toISOString().slice(0,16);
-          document.getElementById('edit-end').value = new Date(startDate.end).toISOString().slice(0,16);
-          $("#addCalendar").on("click",function() {  // modal의 추가 버튼 클릭 시
-            var edit_title = $("#edit-title").val();
-            var start_date = $("#edit-start").val();
-            var end_date = $("#edit-end").val();
-            var color = $("#edit-color").val();
-            var desc = $("#edit-desc").val();
+                    let stDate = new Date(startDate.start);
+                    document.getElementById('edit-start').value = new Date(stDate.getTime() - (stDate.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+                    document.getElementById('edit-end').value = new Date(startDate.end).toISOString().slice(0, 16);
+                    $("#addCalendar").on("click", function () {  // modal의 추가 버튼 클릭 시
+                        var edit_title = $("#edit-title").val();
+                        var start_date = $("#edit-start").val();
+                        var end_date = $("#edit-end").val();
+                        var color = $("#edit-color").val();
+                        var desc = $("#edit-desc").val();
 
-            //내용 입력 여부 확인
-            if (edit_title == null || edit_title == "") {
-              alert("내용을 입력하세요.");
-            } else if (start_date == "" || end_date == "") {
-              alert("날짜를 입력하세요.");
-            } else if (new Date(end_date) - new Date(start_date) < 0) { // date 타입으로 변경 후 확인
-              alert("종료일이 시작일보다 먼저입니다.");
-            } else { // 정상적인 입력 시
-              var obj = {
-                "title": edit_title,
-                "start": start_date,
-                "end": end_date,
-                "backgroundColor": color,
-                "desc": desc,
-              }//전송할 객체 생성
-              $.ajax({
-                type : 'POST',
-                url : 'calendar/save',
-                data : obj,
-                success: function (res) {
-                  location.reload();
+                        //내용 입력 여부 확인
+                        if (edit_title == null || edit_title == "") {
+                            alert("내용을 입력하세요.");
+                        } else if (start_date == "" || end_date == "") {
+                            alert("날짜를 입력하세요.");
+                        } else if (new Date(end_date) - new Date(start_date) < 0) { // date 타입으로 변경 후 확인
+                            alert("종료일이 시작일보다 먼저입니다.");
+                        } else { // 정상적인 입력 시
+                            let obj = {
+                                "title": edit_title,
+                                "start": start_date,
+                                "end": end_date,
+                                "backgroundColor": color,
+                                "desc": desc,
+                            }//전송할 객체 생성
+                            $.ajax({
+                                type: 'POST',
+                                url: 'calendar/save',
+                                data: obj,
+                                success: function (res) {
+                                    location.reload();
+                                }
+                            });
+                        }
+                    });
+
+
+                },
+                eventDragStop: function(event, jsEvent, ui, view){
+
+                },
+                eventClick: function (event) {
+                    let obj = {
+                        "boardId": 1,
+                        "id": event.event.id,
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: 'calendar/view',
+                        data: obj,
+                        success: function (res) {
+                            document.getElementById('edit-title').value = res.contents.title;
+                            document.getElementById('edit-start').value = res.contents.start.slice(0, 16);
+                            document.getElementById('edit-end').value = res.contents.end.slice(0, 16);
+                            document.getElementById('edit-desc').value = res.contents.description;
+                            document.getElementById('edit-color').value = res.contents.backgroundColor;
+                            /*var end_date = $("#edit-end").val();
+                            var color = $("#edit-color").val();
+                            var desc = $("#edit-desc").val();*/
+                            $("#calendarModal").modal("show");
+                        }
+                    }),
+
+                        $("#addCalendar").on("click", function () {  // modal의 추가 버튼 클릭 시
+                            let data =  {
+                                    "boardId" : 1,
+                                    "id" : event.event.id,
+                                    "title": $("#edit-title").val(),
+                                    "startDate": $("#edit-start").val(),
+                                    "endDate": $("#edit-end").val(),
+                                    "backgroundColor": $("#edit-color").val(),
+                                    "description": $("#edit-desc").val()
+                                };
+                            console.log(data);
+
+                            $.ajax({
+                                type: 'POST',
+                                url: 'calendar/update',
+                                data: {
+                                    "boardId" : 1,
+                                    "id" : event.event.id,
+                                    "title": $("#edit-title").val(),
+                                    "startDate": $("#edit-start").val(),
+                                    "endDate": $("#edit-end").val(),
+                                    "backgroundColor": $("#edit-color").val(),
+                                    "description": $("#edit-desc").val()
+                                },
+
+                                success: function (res) {
+                                   $("#calendarModal").modal("hide");
+                                   alert("성공적으로 수정되었습니다.")
+                                }
+                            })
+
+
+                        });
+                    $("#deleteEvent").on('click', function (){
+                        $.ajax({
+                            type: 'POST',
+                            url: 'calendar/delete',
+                            data :{
+                                "boardId" : 1,
+                                "id" : event.event.id
+                            },
+                            success: function (res) {
+                                $("#calendarModal").modal("hide");
+                                alert("성공적으로 삭제되었습니다.");
+                            }
+                        })
+                    })
                 }
-              });
-            }
-          });
 
+                    /*dateClick: function (info){
+                      console.log(info.dateStr);
+                    },*/
 
-        },
-        eventClick: function (event) {
-          let obj = {
-            "boardId" : 1,
-            "id" : event.event.id,
-          }
+                    /*eventDragStart: function(event, jsEvent,ui,view) {
+                      draggedEventIs
+                    }
+                    *///eventColor: "#5c6a96"
+                });
 
-          $.ajax({
-            type: 'POST',
-            url : 'calendar/view',
-            data : obj,
-            success: function (res) {
-              document.getElementById('edit-title').value = res.contents.title;
-              document.getElementById('edit-start').value = res.contents.start.slice(0,16);
-              document.getElementById('edit-end').value = res.contents.end.slice(0,16);
-              document.getElementById('edit-desc').value = res.contents.description;
-              document.getElementById('edit-color').value = res.contents.backgroundColor;
-              /*var end_date = $("#edit-end").val();
-              var color = $("#edit-color").val();
-              var desc = $("#edit-desc").val();*/
-              $("#calendarModal").modal("show");
-            }
-          })
+            calendar.render();
+        });
 
-          console.log(event.event);
+    </script>
+    <style>
 
+        body {
+            margin: 40px 10px;
+            padding: 0;
+            font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+            font-size: 14px;
+        }
+        a{
+            color: black;
+        }
+        #calendar {
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
-        /*dateClick: function (info){
-          console.log(info.dateStr);
-        },*/
-
-        /*eventDragStart: function(event, jsEvent,ui,view) {
-          draggedEventIs
-        }
-        *///eventColor: "#5c6a96"
-      });
-
-      calendar.render();
-    });
-
-  </script>
-  <style>
-
-    body {
-      margin: 40px 10px;
-      padding: 0;
-      font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-      font-size: 14px;
-    }
-
-    #calendar {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-  </style>
+    </style>
 </head>
 <body>
 
@@ -151,64 +206,64 @@
 
 <!-- 일정 추가 MODAL -->
 <div class="modal fade" id="calendarModal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title"></h4>
-      </div>
-      <div class="modal-body">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
 
-        <div class="row">
-          <div class="col-xs-12">
-            <label class="col-xs-4" for="edit-title">일정명</label>
-            <input class="inputModal" type="text" name="edit-title" id="edit-title"
-                   required="required" />
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-12">
-            <label class="col-xs-4" for="edit-start">시작</label>
-            <input class="inputModal" type="datetime-local" name="edit-start" id="edit-start" />
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-12">
-            <label class="col-xs-4" style="" for="edit-end">종료</label>
-            <input class="inputModal" type="datetime-local" name="edit-end" id="edit-end" />
-          </div>
-        </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label class="col-xs-4" for="edit-title">일정명</label>
+                        <input class="inputModal" type="text" name="edit-title" id="edit-title"
+                               required="required"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label class="col-xs-4" for="edit-start">시작</label>
+                        <input class="inputModal" type="datetime-local" name="edit-start" id="edit-start"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label class="col-xs-4" style="" for="edit-end">종료</label>
+                        <input class="inputModal" type="datetime-local" name="edit-end" id="edit-end"/>
+                    </div>
+                </div>
 
-        <div class="row">
-          <div class="col-xs-12">
-            <label class="col-xs-4" for="edit-color">색상</label>
-            <select class="inputModal" name="color" id="edit-color">
-              <option value="#D25565" style="color:#D25565;">빨간색</option>
-              <option value="#9775fa" style="color:#9775fa;">보라색</option>
-              <option value="#ffa94d" style="color:#ffa94d;">주황색</option>
-              <option value="#74c0fc" style="color:#74c0fc;">파란색</option>
-              <option value="#f06595" style="color:#f06595;">핑크색</option>
-              <option value="#63e6be" style="color:#63e6be;">연두색</option>
-              <option value="#a9e34b" style="color:#a9e34b;">초록색</option>
-              <option value="#4d638c" style="color:#4d638c;">남색</option>
-            </select>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-12">
-            <label class="col-xs-4" for="edit-desc">설명</label>
-            <textarea rows="4" cols="50" class="inputModal" name="edit-desc"
-                      id="edit-desc"></textarea>
-          </div>
-        </div>
-      </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label class="col-xs-4" for="edit-color">색상</label>
+                        <select class="inputModal" name="color" id="edit-color">
+                            <option value="#D25565" style="color:#D25565;">빨간색</option>
+                            <option value="#9775fa" style="color:#9775fa;">보라색</option>
+                            <option value="#ffa94d" style="color:#ffa94d;">주황색</option>
+                            <option value="#74c0fc" style="color:#74c0fc;">파란색</option>
+                            <option value="#f06595" style="color:#f06595;">핑크색</option>
+                            <option value="#63e6be" style="color:#63e6be;">연두색</option>
+                            <option value="#a9e34b" style="color:#a9e34b;">초록색</option>
+                            <option value="#4d638c" style="color:#4d638c;">남색</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label class="col-xs-4" for="edit-desc">설명</label>
+                        <textarea rows="4" cols="50" class="inputModal" name="edit-desc"
+                                  id="edit-desc"></textarea>
+                    </div>
+                </div>
+            </div>
 
-      <div class="modal-footer modalBtnContainer-modifyEvent">
-        <button type="button" class="btn btn-default" id="closeModalBtn" data-dismiss="modal">닫기</button>
-        <button type="button" class="btn btn-danger" id="deleteEvent">삭제</button>
-        <button type="button" class="btn btn-primary" id="addCalendar">저장</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
+            <div class="modal-footer modalBtnContainer-modifyEvent">
+                <button type="button" class="btn btn-default" id="closeModalBtn" data-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-danger" id="deleteEvent">삭제</button>
+                <button type="button" class="btn btn-primary" id="addCalendar">저장</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 </body>
 </html>

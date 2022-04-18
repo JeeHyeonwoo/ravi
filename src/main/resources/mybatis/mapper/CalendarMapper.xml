@@ -32,4 +32,15 @@
         where c.board_id = #{boardId}
         and c.id = #{id}
     </select>
+
+    <update id="update">
+        update calendar
+        set
+            title = #{title},
+            start_date = #{startDate}::timestamp ,
+            end_date = #{endDate}::timestamp,
+            background_color = #{backgroundColor},
+            description = #{description}
+        where id=#{id};
+    </update>
 </mapper>

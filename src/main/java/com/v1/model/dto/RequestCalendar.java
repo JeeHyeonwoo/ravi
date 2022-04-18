@@ -10,4 +10,9 @@ public class RequestCalendar {
     private String endDate;
     private Long boardId;
     private Long id;
+    private String title;
+    private String username;
+    private String backgroundColor;
+    private String textColor;
+    private String description;
 }

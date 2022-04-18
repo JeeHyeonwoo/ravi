@@ -61,9 +61,7 @@ public class CalendarServiceImpl implements CalendarService {
         return false;
 
     }
-    /**
-     * 캘린더 빌드
-     * */
+
     @Override
     public ResponseCalendar calendarInfo(RequestCalendar requestCalendar) {
         Optional<ResponseCalendar> result = calendarMapper.findByCalendar(requestCalendar);
@@ -73,6 +71,14 @@ public class CalendarServiceImpl implements CalendarService {
         return null;
 
     }
+
+    @Override
+    public boolean updateService(RequestCalendar requestCalendar) {
+
+        calendarMapper.update(requestCalendar);
+        return true;
+    }
+
     /*@Override
     public int[][] buildCalendar(int year, int month) {
         int[][] calendar = new int[5][7];

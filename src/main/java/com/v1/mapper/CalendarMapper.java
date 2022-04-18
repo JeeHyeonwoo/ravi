@@ -16,4 +16,5 @@ public interface CalendarMapper {
     List<ResponseCalendar> findByCalendars(CalendarDTO calendarDTO);
     Optional<ResponseCalendar> findByCalendar(RequestCalendar requestCalendar);
     void delete(Long id);
+    void update(RequestCalendar requestCalendar);
 }
