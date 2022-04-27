@@ -5,16 +5,17 @@ spring:
     username: postgres
     password: gusdn0110
 
-
   thymeleaf:
-    prefix: classpath:/templates/template/
+    prefix: classpath:templates/template/
     suffix: .html
-
+    check-template-location: true
+    cache: false
+  mvc:
+    static-path-pattern: "/static/**"
 
 mybatis:
   mapper-locations: mybatis/mapper/*.xml
   type-aliases-package: com.v1.mapper
-
 
 logging:
   file:
@@ -22,4 +23,3 @@ logging:
 
 server:
   port: 8080
-

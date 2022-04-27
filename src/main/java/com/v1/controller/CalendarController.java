@@ -9,6 +9,8 @@ import com.v1.model.vo.Response;
 import com.v1.model.vo.Result;
 import com.v1.service.CalendarService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -27,6 +30,7 @@ import java.util.*;
 public class CalendarController {
 
     private final CalendarService calendarService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping("/index")
     public String index() {
@@ -98,10 +102,9 @@ public class CalendarController {
     @PostMapping("/update")
     @ResponseBody
     public ResponseEntity<Response> update(RequestCalendar requestCalendar){
-        System.out.println("backend ㅁㄴ제");
+
         boolean result = calendarService.updateService(requestCalendar);
         if(result) {
-            System.out.println("실행중");
             Result response = Result.builder().build();
             return new ResponseEntity<>(Response.builder().response(response).contents("success").build(), HttpStatus.OK);
         } else {
@@ -114,5 +117,10 @@ public class CalendarController {
         }
     }
 
+
+    @GetMapping("/html-thumb")
+    public void htmlThumbnail() throws IOException {
+
+    }
 
 }
