@@ -24,7 +24,7 @@ public class CalendarMapperTest {
         int month = Month.valueOf(date[0]).ordinal() + 1;
 
         String s = String.valueOf(month);
-        System.out.println(s +"ㅇ아아아앙");
+        System.out.println(s +"ㅇ아아아앙ㅁㄴㅇ");
 
     }
 
